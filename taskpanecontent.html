@@ -8,9 +8,7 @@
 
 <h2>Email Plugin</h2>
 
-<button onclick="addContent()">Add Content to Email</button>
-
-<script>
+<button onclick="addContent()">Add API Button</button>
 
 <script>
 
@@ -20,39 +18,55 @@ Office.onReady(() => {
 
 function addContent() {
 
-    var content = `
-        <h3>External System</h3>
+    Office.context.mailbox.item.subject.getAsync(function(subjectResult) {
 
-        <p>This email is processed.</p>
+        let subject = subjectResult.value;
 
-        <a href=""https://ash9292.github.io/outlook-plugin/taskpane.html"
-           style="
-                background-color:#0078d4;
-                color:white;
-                padding:10px 20px;
-                text-decoration:none;
-                border-radius:5px;
-                display:inline-block;
-           ">
-           Process Email
-        </a>
-    `;
+        Office.context.mailbox.item.from.getAsync(function(fromResult) {
 
-    Office.context.mailbox.item.body.setAsync(
-        content,
-        { coercionType: Office.CoercionType.Html },
-        function (result) {
+            let sender = fromResult.value.emailAddress;
 
-            if (result.status === Office.AsyncResultStatus.Succeeded) {
-                console.log("Content added successfully");
-            } else {
-                console.log("Error: " + result.error.message);
-            }
-        }
-    );
+            let apiUrl = "https://your-api.com/processEmail"
+                + "?subject=" + encodeURIComponent(subject)
+                + "&sender=" + encodeURIComponent(sender);
+
+            let content = `
+                <h3>Email Processing</h3>
+
+                <p>Click button to send email to external system</p>
+
+                <a href="${apiUrl}"
+                   style="
+                        background-color:#0078d4;
+                        color:white;
+                        padding:12px 20px;
+                        text-decoration:none;
+                        border-radius:6px;
+                        display:inline-block;
+                   ">
+                   Send Email to API
+                </a>
+            `;
+
+            Office.context.mailbox.item.body.setAsync(
+                content,
+                { coercionType: Office.CoercionType.Html },
+                function(result) {
+
+                    if (result.status === Office.AsyncResultStatus.Succeeded) {
+                        console.log("Button added to email");
+                    } else {
+                        console.log(result.error.message);
+                    }
+                }
+            );
+
+        });
+
+    });
+
 }
 
-</script>
 </script>
 
 </body>
