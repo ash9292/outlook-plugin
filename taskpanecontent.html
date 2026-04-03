@@ -12,13 +12,31 @@
 
 <script>
 
+<script>
+
 Office.onReady(() => {
     console.log("Office ready");
 });
 
 function addContent() {
 
-    var content = "<p><b>External System Data:</b></p><p>This email is processed.</p>";
+    var content = `
+        <h3>External System</h3>
+
+        <p>This email is processed.</p>
+
+        <a href="https://example.com/processEmail"
+           style="
+                background-color:#0078d4;
+                color:white;
+                padding:10px 20px;
+                text-decoration:none;
+                border-radius:5px;
+                display:inline-block;
+           ">
+           Process Email
+        </a>
+    `;
 
     Office.context.mailbox.item.body.setAsync(
         content,
@@ -33,6 +51,8 @@ function addContent() {
         }
     );
 }
+
+</script>
 </script>
 
 </body>
