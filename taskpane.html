@@ -17,6 +17,7 @@ function sendEmail() {
         subject: item.subject,
         from: item.from.emailAddress
     };
+    console.log('emailData',emailData);
 
     fetch("https://external-api.com/email", {
         method: "POST",
