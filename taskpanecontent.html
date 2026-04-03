@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+
+<body>
+
+<h2>Email Plugin</h2>
+
+<button onclick="addContent()">Add Content to Email</button>
+
+<script>
+
+Office.onReady(() => {
+    console.log("Office ready");
+});
+
+function addContent() {
+
+    var content = "<p><b>External System Data:</b></p><p>This email is processed.</p>";
+
+    Office.context.mailbox.item.body.setAsync(
+        content,
+        { coercionType: Office.CoercionType.Html },
+        function (result) {
+
+            if (result.status === Office.AsyncResultStatus.Succeeded) {
+                console.log("Content added successfully");
+            } else {
+                console.log("Error: " + result.error.message);
+            }
+        }
+    );
+}
+</script>
+
+</body>
+</html>
