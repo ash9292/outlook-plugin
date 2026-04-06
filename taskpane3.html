@@ -2,7 +2,28 @@
 <html>
 <head>
     <title>Email Thread Reader</title>
+
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        button {
+            background: #0078d4;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #005fa3;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,6 +41,11 @@ Office.onReady(() => {
 function loadThread() {
 
     let item = Office.context.mailbox.item;
+
+    if (!item) {
+        alert("No email selected");
+        return;
+    }
 
     let subject = item.subject || "";
     let conversationId = item.conversationId || "";
@@ -39,24 +65,26 @@ function loadThread() {
 
     item.body.getAsync(
         Office.CoercionType.Text,
-        function(bodyResult) {
+        function(result) {
 
-            if (bodyResult.status !== Office.AsyncResultStatus.Succeeded) {
+            if (result.status !== Office.AsyncResultStatus.Succeeded) {
                 alert("Body fetch failed");
                 return;
             }
 
-            let body = bodyResult.value;
+            let body = result.value || "";
 
             let url =
                 "https://ash9292.github.io/outlook-plugin/threadViewer.html"
                 + "?subject=" + encodeURIComponent(subject)
-                + "&to=" + encodeURIComponent(toAddresses)
                 + "&from=" + encodeURIComponent(fromAddress)
+                + "&to=" + encodeURIComponent(toAddresses)
                 + "&cc=" + encodeURIComponent(ccAddresses)
                 + "&body=" + encodeURIComponent(body)
                 + "&conversationId=" + encodeURIComponent(conversationId)
-                + "&internetMessageId=" + encodeURIComponent(internetMessageId);
+                + "&messageId=" + encodeURIComponent(internetMessageId);
+
+            console.log("Redirect URL:", url);
 
             window.open(url, "_blank");
         }
