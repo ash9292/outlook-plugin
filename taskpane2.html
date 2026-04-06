@@ -1,26 +1,63 @@
+<!DOCTYPE html>
 <html>
 <head>
-<script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 
 <body>
 
-<button onclick="sendEmail()">Send Email to API</button>
+<h2>Email Plugin</h2>
+
+<button onclick="openExternalUrl()">Send Email Data</button>
 
 <script>
 
-function sendEmail() {
+Office.onReady(() => {
+    console.log("Office ready");
+});
 
-    var item = Office.context.mailbox.item;
+function openExternalUrl() {
 
-    var emailData = {
-        subject: item.subject,
-        from: item.from.emailAddress
-    };
-    console.log('emailData',emailData);
-    let apiUrl ="https://your-api.com/processEmail";
-    console.log(apiUrl);
-    Office.context.ui.openBrowserWindow(apiUrl);
+    let item = Office.context.mailbox.item;
+
+    // Subject
+    item.subject.getAsync(function(subjectResult) {
+
+        let subject = subjectResult.value || "";
+
+        // To Address
+        item.to.getAsync(function(toResult) {
+
+            let toAddresses = "";
+
+            if (toResult.value) {
+                toAddresses = toResult.value
+                    .map(recipient => recipient.emailAddress)
+                    .join(",");
+            }
+
+            // Body
+            item.body.getAsync(
+                Office.CoercionType.Text,
+                function(bodyResult) {
+
+                    let body = bodyResult.value || "";
+
+                    let url = "https://your-api.com/processEmail"
+                        + "?subject=" + encodeURIComponent(subject)
+                        + "&to=" + encodeURIComponent(toAddresses)
+                        + "&body=" + encodeURIComponent(body);
+
+                    // Open new URL
+                    window.open(url, "_blank");
+
+                }
+            );
+
+        });
+
+    });
+
 }
 
 </script>
