@@ -1,73 +1,87 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+<script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 
 <body>
 
 <h2>Email Plugin</h2>
 
-<button id="sendBtn">Send Email Data</button>
-
-<a id="redirectLink" target="_blank" style="display:none;"></a>
+<button onclick="openExternalUrl()">Send Email Data</button>
 
 <script>
 
 Office.onReady(() => {
     console.log("Office ready");
-
-    document.getElementById("sendBtn").addEventListener("click", openExternalUrl);
 });
 
 function openExternalUrl() {
 
     let item = Office.context.mailbox.item;
 
-    if (!item) {
-        alert("Email item not available");
-        return;
+    let subject = "";
+    let toAddresses = "";
+
+    // SUBJECT
+    if (item.subject && typeof item.subject === "string") {
+        subject = item.subject;
+        getRecipients();
+    } else {
+        item.subject.getAsync(function(result) {
+            subject = result.value || "";
+            getRecipients();
+        });
     }
 
-    item.subject.getAsync(function(subjectResult) {
+    function getRecipients() {
 
-        let subject = subjectResult.value || "";
+        if (item.to && Array.isArray(item.to)) {
 
-        item.to.getAsync(function(toResult) {
+            toAddresses = item.to
+                .map(r => r.emailAddress)
+                .join(",");
 
-            let toAddresses = "";
+            getBody();
 
-            if (toResult.value) {
-                toAddresses = toResult.value
+        } else {
+
+            item.to.getAsync(function(result) {
+
+                toAddresses = result.value
                     .map(r => r.emailAddress)
                     .join(",");
+
+                getBody();
+            });
+        }
+    }
+
+    function getBody() {
+
+        item.body.getAsync(
+            Office.CoercionType.Text,
+            function(bodyResult) {
+
+                let body = bodyResult.value || "";
+
+                let url =
+                    "https://ash9292.github.io/outlook-plugin/test.html"
+                    + "?subject=" + encodeURIComponent(subject)
+                    + "&to=" + encodeURIComponent(toAddresses)
+                    + "&body=" + encodeURIComponent(body);
+
+                console.log("URL:", url);
+
+                // Redirect using link
+                let link = document.createElement("a");
+                link.href = url;
+                link.target = "_blank";
+                link.click();
+
             }
-
-            item.body.getAsync(
-                Office.CoercionType.Text,
-                function(bodyResult) {
-
-                    let body = bodyResult.value || "";
-
-                    let url =
-                        "https://ash9292.github.io/outlook-plugin/test.html"
-                        + "?subject=" + encodeURIComponent(subject)
-                        + "&to=" + encodeURIComponent(toAddresses)
-                        + "&body=" + encodeURIComponent(body);
-
-                    console.log("Redirect URL:", url);
-
-                    let link = document.getElementById("redirectLink");
-                    link.href = url;
-                    link.click();   // ✅ trigger redirect
-
-                }
-            );
-
-        });
-
-    });
-
+        );
+    }
 }
 
 </script>
