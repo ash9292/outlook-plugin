@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+
+<body>
+
+<h2>Email Plugin</h2>
+
+<button onclick="openExternalUrl()">Send Email Data</button>
+
+<script>
+
+Office.onReady(() => {
+    console.log("Office ready");
+});
+
+function openExternalUrl() {
+
+    let item = Office.context.mailbox.item;
+
+    // Subject
+    item.subject.getAsync(function(subjectResult) {
+
+        let subject = subjectResult.value || "";
+
+        // To Address
+        item.to.getAsync(function(toResult) {
+
+            let toAddresses = "";
+
+            if (toResult.value) {
+                toAddresses = toResult.value
+                    .map(recipient => recipient.emailAddress)
+                    .join(",");
+            }
+
+            // Body
+            item.body.getAsync(
+                Office.CoercionType.Text,
+                function(bodyResult) {
+
+                    let body = bodyResult.value || "";
+
+                    let url = "https://your-api.com/processEmail"
+                        + "?subject=" + encodeURIComponent(subject)
+                        + "&to=" + encodeURIComponent(toAddresses)
+                        + "&body=" + encodeURIComponent(body);
+
+                    // Open new URL
+                    window.open(url, "_blank");
+
+                }
+            );
+
+        });
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>
