@@ -2,6 +2,23 @@
 <html>
 <head>
     <title>Thread Viewer</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        .box {
+            margin-bottom: 15px;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            white-space: pre-wrap;
+        }
+    </style>
 </head>
 
 <body>
@@ -14,17 +31,17 @@
 
 function getParam(name) {
     let url = new URL(window.location.href);
-    return url.searchParams.get(name);
+    return url.searchParams.get(name) || "";
 }
 
 document.getElementById("data").innerHTML = `
-<b>Subject:</b> ${getParam("subject")} <br><br>
-<b>From:</b> ${getParam("from")} <br><br>
-<b>To:</b> ${getParam("to")} <br><br>
-<b>CC:</b> ${getParam("cc")} <br><br>
-<b>Conversation ID:</b> ${getParam("conversationId")} <br><br>
-<b>Message ID:</b> ${getParam("internetMessageId")} <br><br>
-<b>Body:</b><br><pre>${getParam("body")}</pre>
+<div class="box"><b>Subject:</b> ${getParam("subject")}</div>
+<div class="box"><b>From:</b> ${getParam("from")}</div>
+<div class="box"><b>To:</b> ${getParam("to")}</div>
+<div class="box"><b>CC:</b> ${getParam("cc")}</div>
+<div class="box"><b>Conversation ID:</b> ${getParam("conversationId")}</div>
+<div class="box"><b>Message ID:</b> ${getParam("messageId")}</div>
+<div class="box"><b>Body:</b><pre>${getParam("body")}</pre></div>
 `;
 
 </script>
