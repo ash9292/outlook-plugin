@@ -18,13 +18,8 @@ function sendEmail() {
         from: item.from.emailAddress
     };
     console.log('emailData',emailData);
-     let apiUrl =
-                "https://your-api.com/processEmail"
-                + "?subject=" + encodeURIComponent(emailData.subject)
-                + "&from=" + encodeURIComponent(emailData.from);
-
-            console.log(apiUrl);
-
+    let apiUrl ="https://your-api.com/processEmail";
+    console.log(apiUrl);
     Office.context.ui.openBrowserWindow(apiUrl);
 }
 
