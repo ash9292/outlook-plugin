@@ -8,48 +8,58 @@
 
 <h2>Email Plugin</h2>
 
-<button onclick="openExternalUrl()">Send Email Data</button>
+<button id="sendBtn">Send Email Data</button>
+
+<a id="redirectLink" target="_blank" style="display:none;"></a>
 
 <script>
 
 Office.onReady(() => {
     console.log("Office ready");
+
+    document.getElementById("sendBtn").addEventListener("click", openExternalUrl);
 });
 
 function openExternalUrl() {
 
     let item = Office.context.mailbox.item;
 
-    // Subject
+    if (!item) {
+        alert("Email item not available");
+        return;
+    }
+
     item.subject.getAsync(function(subjectResult) {
 
         let subject = subjectResult.value || "";
 
-        // To Address
         item.to.getAsync(function(toResult) {
 
             let toAddresses = "";
 
             if (toResult.value) {
                 toAddresses = toResult.value
-                    .map(recipient => recipient.emailAddress)
+                    .map(r => r.emailAddress)
                     .join(",");
             }
 
-            // Body
             item.body.getAsync(
                 Office.CoercionType.Text,
                 function(bodyResult) {
 
                     let body = bodyResult.value || "";
 
-                    let url = "https://your-api.com/processEmail"
+                    let url =
+                        "https://ash9292.github.io/outlook-plugin/test.html"
                         + "?subject=" + encodeURIComponent(subject)
                         + "&to=" + encodeURIComponent(toAddresses)
                         + "&body=" + encodeURIComponent(body);
 
-                    // Open new URL
-                    window.open(url, "_blank");
+                    console.log("Redirect URL:", url);
+
+                    let link = document.getElementById("redirectLink");
+                    link.href = url;
+                    link.click();   // ✅ trigger redirect
 
                 }
             );
