@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Data Received</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ddd;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        h2 {
+            color: #0078d4;
+        }
+
+        .label {
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .value {
+            background: #fafafa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>Email Data Received</h2>
+
+    <div class="label">Subject</div>
+    <div class="value" id="subject"></div>
+
+    <div class="label">To</div>
+    <div class="value" id="to"></div>
+
+    <div class="label">Body</div>
+    <div class="value" id="body"></div>
+
+</div>
+
+<script>
+
+function getParams() {
+
+    let params = new URLSearchParams(window.location.search);
+
+    let subject = params.get("subject");
+    let to = params.get("to");
+    let body = params.get("body");
+
+    document.getElementById("subject").innerText = subject;
+    document.getElementById("to").innerText = to;
+    document.getElementById("body").innerText = body;
+}
+
+getParams();
+
+</script>
+
+</body>
+</html>
