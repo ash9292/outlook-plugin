@@ -1,70 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-
     <title>Thread Viewer</title>
-
-    <style>
-        body {
-            font-family: Arial;
-            padding: 20px;
-        }
-
-        .email {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-top: 10px;
-        }
-    </style>
-
 </head>
 
 <body>
 
-<h2>Email Thread Data</h2>
+<h2>Email Details</h2>
 
 <div id="data"></div>
 
 <script>
 
-let params = new URLSearchParams(window.location.search);
-
-let subject = params.get("subject");
-let to = params.get("to");
-let body = params.get("body");
-let conversationId = params.get("conversationId");
-let thread = params.get("thread");
-
-let html = `
-    <h3>Current Email</h3>
-    <div class="email">
-        <b>Subject:</b> ${subject}<br/>
-        <b>To:</b> ${to}<br/>
-        <b>Body:</b><br/> ${body}<br/>
-        <b>Conversation:</b> ${conversationId}
-    </div>
-`;
-
-if (thread) {
-
-    let threadList = JSON.parse(decodeURIComponent(thread));
-
-    html += "<h3>Thread Emails</h3>";
-
-    threadList.forEach(mail => {
-
-        html += `
-            <div class="email">
-                <b>Subject:</b> ${mail.subject}<br/>
-                <b>From:</b> ${mail.from.emailAddress.address}<br/>
-                <b>Date:</b> ${mail.receivedDateTime}<br/>
-                <b>Preview:</b> ${mail.bodyPreview}
-            </div>
-        `;
-    });
+function getParam(name) {
+    let url = new URL(window.location.href);
+    return url.searchParams.get(name);
 }
 
-document.getElementById("data").innerHTML = html;
+document.getElementById("data").innerHTML = `
+<b>Subject:</b> ${getParam("subject")} <br><br>
+<b>From:</b> ${getParam("from")} <br><br>
+<b>To:</b> ${getParam("to")} <br><br>
+<b>CC:</b> ${getParam("cc")} <br><br>
+<b>Conversation ID:</b> ${getParam("conversationId")} <br><br>
+<b>Message ID:</b> ${getParam("internetMessageId")} <br><br>
+<b>Body:</b><br><pre>${getParam("body")}</pre>
+`;
 
 </script>
 
