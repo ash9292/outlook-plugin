@@ -49,7 +49,7 @@ function openExternalUrl() {
                         + "&body=" + encodeURIComponent(body);
 
                     // Open new URL
-                    window.open(url, "_blank");
+                    Office.context.ui.openBrowserWindow(url);
 
                 }
             );
