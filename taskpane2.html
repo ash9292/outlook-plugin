@@ -49,7 +49,11 @@ function openExternalUrl() {
                         + "&body=" + encodeURIComponent(body);
 
                     // Open new URL
-                    Office.context.ui.openBrowserWindow(url);
+                    if (Office.context.ui) {
+                            Office.context.ui.openBrowserWindow(url);
+                        } else {
+                            alert("Browser window API not supported");
+                        }
 
                 }
             );
