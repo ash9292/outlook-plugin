@@ -20,7 +20,7 @@ function sendEmail() {
     console.log('emailData',emailData);
      let apiUrl =
                 "https://your-api.com/processEmail"
-                + "?subject=" + encodeURIComponent(emailData .subject)
+                + "?subject=" + encodeURIComponent(emailData.subject)
                 + "&from=" + encodeURIComponent(emailData.from);
 
             console.log(apiUrl);
