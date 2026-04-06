@@ -1,77 +1,31 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+<script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 
 <body>
 
-<h2>Email Plugin</h2>
-
-<button onclick="openExternalUrl()">Send Email Data</button>
-
-<div id="linkContainer"></div>
+<button onclick="sendEmail()">Send Email to API</button>
 
 <script>
 
-Office.onReady(() => {
-    console.log("Office ready");
-});
+function sendEmail() {
 
-function openExternalUrl() {
+    var item = Office.context.mailbox.item;
 
-    let item = Office.context.mailbox.item;
+    var emailData = {
+        subject: item.subject,
+        from: item.from.emailAddress
+    };
+    console.log('emailData',emailData);
+     let apiUrl =
+                "https://your-api.com/processEmail"
+                + "?subject=" + encodeURIComponent(subject)
+                + "&sender=" + encodeURIComponent(sender);
 
-    item.subject.getAsync(function(subjectResult) {
+            console.log(apiUrl);
 
-        let subject = subjectResult.value || "";
-
-        item.to.getAsync(function(toResult) {
-
-            let toAddresses = "";
-
-            if (toResult.value) {
-                toAddresses = toResult.value
-                    .map(r => r.emailAddress)
-                    .join(",");
-            }
-
-            item.body.getAsync(
-                Office.CoercionType.Text,
-                function(bodyResult) {
-
-                    let body = bodyResult.value || "";
-
-                    let apiUrl =
-                        "https://ash9292.github.io/outlook-plugin/test.html"
-                        + "?subject=" + encodeURIComponent(subject)
-                        + "&to=" + encodeURIComponent(toAddresses)
-                        + "&body=" + encodeURIComponent(body);
-
-                    let linkHtml = `
-                        <a href="${apiUrl}"
-                           target="_blank"
-                           style="
-                                background-color:#0078d4;
-                                color:white;
-                                padding:12px 20px;
-                                text-decoration:none;
-                                border-radius:6px;
-                                display:inline-block;
-                           ">
-                           Open External Page
-                        </a>
-                    `;
-
-                    document.getElementById("linkContainer").innerHTML = linkHtml;
-
-                }
-            );
-
-        });
-
-    });
-
+    Office.context.ui.openBrowserWindow(apiUrl);
 }
 
 </script>
