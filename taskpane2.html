@@ -10,6 +10,8 @@
 
 <button onclick="openExternalUrl()">Send Email Data</button>
 
+<div id="linkContainer"></div>
+
 <script>
 
 Office.onReady(() => {
@@ -20,40 +22,48 @@ function openExternalUrl() {
 
     let item = Office.context.mailbox.item;
 
-    // Subject
     item.subject.getAsync(function(subjectResult) {
 
         let subject = subjectResult.value || "";
 
-        // To Address
         item.to.getAsync(function(toResult) {
 
             let toAddresses = "";
 
             if (toResult.value) {
                 toAddresses = toResult.value
-                    .map(recipient => recipient.emailAddress)
+                    .map(r => r.emailAddress)
                     .join(",");
             }
 
-            // Body
             item.body.getAsync(
                 Office.CoercionType.Text,
                 function(bodyResult) {
 
                     let body = bodyResult.value || "";
 
-                    let url = "https://your-api.com/processEmail"
+                    let apiUrl =
+                        "https://ash9292.github.io/outlook-plugin/test.html"
                         + "?subject=" + encodeURIComponent(subject)
                         + "&to=" + encodeURIComponent(toAddresses)
                         + "&body=" + encodeURIComponent(body);
 
-                    // Open new URL
-                    if (Office.context.ui) {
-                            Office.context.ui.openBrowserWindow(url);
-                        } else {
-                            alert("Browser window API not supported");
-                        }
+                    let linkHtml = `
+                        <a href="${apiUrl}"
+                           target="_blank"
+                           style="
+                                background-color:#0078d4;
+                                color:white;
+                                padding:12px 20px;
+                                text-decoration:none;
+                                border-radius:6px;
+                                display:inline-block;
+                           ">
+                           Open External Page
+                        </a>
+                    `;
+
+                    document.getElementById("linkContainer").innerHTML = linkHtml;
 
                 }
             );
