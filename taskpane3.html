@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Thread Reader</title>
+
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        button {
+            background: #0078d4;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .email {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Email Thread Reader</h2>
+
+<button onclick="loadThread()">Load Email Thread</button>
+
+<div id="thread"></div>
+
+<script>
+
+Office.onReady(() => {
+    console.log("Office Ready");
+});
+
+function loadThread() {
+
+    let item = Office.context.mailbox.item;
+    let conversationId = item.conversationId;
+
+    console.log("Conversation ID:", conversationId);
+
+    Office.context.mailbox.getCallbackTokenAsync(function(result) {
+
+        if (result.status !== Office.AsyncResultStatus.Succeeded) {
+            alert("Token error");
+            return;
+        }
+
+        let token = result.value;
+
+        fetch(
+            "https://graph.microsoft.com/v1.0/me/messages?$filter=conversationId eq '" 
+            + conversationId + "'",
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        )
+        .then(res => res.json())
+        .then(data => {
+
+            let html = "";
+
+            data.value.forEach(mail => {
+
+                html += `
+                    <div class="email">
+                        <b>Subject:</b> ${mail.subject} <br/>
+                        <b>From:</b> ${mail.from.emailAddress.address} <br/>
+                        <b>Date:</b> ${mail.receivedDateTime} <br/>
+                        <b>Body:</b> ${mail.bodyPreview}
+                    </div>
+                `;
+            });
+
+            document.getElementById("thread").innerHTML = html;
+
+        })
+        .catch(err => console.log(err));
+
+    });
+}
+
+</script>
+
+</body>
+</html>
