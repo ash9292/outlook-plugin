@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+           xsi:type="MailApp">
+
+  <Id>7b5d9f7e-5c6a-4f2c-9c4b-123456789012</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>My Company</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+
+  <DisplayName DefaultValue="Email API Plugin"/>
+  <Description DefaultValue="Send email details to external system from quick action"/>
+  <IconUrl DefaultValue="https://ash9292.github.io/outlook-plugin/apiicon.png"/>
+  <HighResolutionIconUrl DefaultValue="https://ash9292.github.io/outlook-plugin/apiicon.png"/>
+
+  <Hosts>
+    <Host Name="Mailbox"/>
+  </Hosts>
+
+  <Requirements>
+    <Sets>
+      <Set Name="Mailbox" MinVersion="1.5"/>
+    </Sets>
+  </Requirements>
+
+  <!-- FORM SETTINGS -->
+  <FormSettings>
+
+    <Form xsi:type="ItemRead">
+     
+		<DesktopSettings>
+			<SourceLocation DefaultValue="https://ash9292.github.io/outlook-plugin/taskpane2.html"/>
+			<RequestedHeight>250</RequestedHeight>
+		</DesktopSettings>
+    </Form>
+
+    <Form xsi:type="ItemEdit">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="https://ash9292.github.io/outlook-plugin/taskpane2.html"/>
+      </DesktopSettings>
+    </Form>
+
+  </FormSettings>
+
+  <!-- PERMISSION (Moved Here) -->
+  <Permissions>ReadWriteItem</Permissions>
+
+  <!-- RULE -->
+  <Rule xsi:type="RuleCollection" Mode="Or">
+
+    <Rule xsi:type="ItemIs"
+          ItemType="Message"
+          FormType="Read"/>
+
+    <Rule xsi:type="ItemIs"
+          ItemType="Message"
+          FormType="Edit"/>
+
+  </Rule>
+
+  <!-- VERSION OVERRIDE -->
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides"
+                    xsi:type="VersionOverridesV1_0">
+
+    <Hosts>
+      <Host xsi:type="MailHost">
+
+        <DesktopFormFactor>
+
+          <!-- EMAIL READ -->
+          <ExtensionPoint xsi:type="MessageReadCommandSurface">
+            <OfficeTab id="TabDefault">
+
+              <Group id="readGroup">
+                <Label resid="groupLabel"/>
+
+                <Control xsi:type="Button" id="readButton">
+
+                  <Label resid="buttonLabel"/>
+
+                  <Supertip>
+                    <Title resid="buttonLabel"/>
+                    <Description resid="buttonDescription"/>
+                  </Supertip>
+
+                  <Icon>
+                    <bt:Image size="16" resid="icon16"/>
+                    <bt:Image size="32" resid="icon32"/>
+                    <bt:Image size="80" resid="icon80"/>
+                  </Icon>
+
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="taskpaneUrl"/>
+                  </Action>
+
+                </Control>
+
+              </Group>
+
+            </OfficeTab>
+          </ExtensionPoint>
+
+          <!-- EMAIL COMPOSE -->
+          <ExtensionPoint xsi:type="MessageComposeCommandSurface">
+            <OfficeTab id="TabDefault">
+
+              <Group id="composeGroup">
+                <Label resid="groupLabel"/>
+
+                <Control xsi:type="Button" id="composeButton">
+
+                  <Label resid="buttonLabel"/>
+
+                  <Supertip>
+                    <Title resid="buttonLabel"/>
+                    <Description resid="buttonDescription"/>
+                  </Supertip>
+
+                  <Icon>
+                    <bt:Image size="16" resid="icon16"/>
+                    <bt:Image size="32" resid="icon32"/>
+                    <bt:Image size="80" resid="icon80"/>
+                  </Icon>
+
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="taskpaneUrl"/>
+                  </Action>
+
+                </Control>
+
+              </Group>
+
+            </OfficeTab>
+          </ExtensionPoint>
+
+        </DesktopFormFactor>
+
+      </Host>
+    </Hosts>
+
+    <Resources>
+
+      <bt:Images>
+        <bt:Image id="icon16" DefaultValue="https://ash9292.github.io/outlook-plugin/apiicon.png"/>
+        <bt:Image id="icon32" DefaultValue="https://ash9292.github.io/outlook-plugin/apiicon.png"/>
+        <bt:Image id="icon80" DefaultValue="https://ash9292.github.io/outlook-plugin/apiicon.png"/>
+      </bt:Images>
+
+      <bt:Urls>
+        <bt:Url id="taskpaneUrl"
+                DefaultValue="https://ash9292.github.io/outlook-plugin/taskpane2.html"/>
+      </bt:Urls>
+
+      <bt:ShortStrings>
+        <bt:String id="groupLabel" DefaultValue="Email Tools"/>
+        <bt:String id="buttonLabel" DefaultValue="Send to External API"/>
+      </bt:ShortStrings>
+
+      <bt:LongStrings>
+        <bt:String id="buttonDescription"
+                   DefaultValue="Send email details to external system"/>
+      </bt:LongStrings>
+
+    </Resources>
+
+  </VersionOverrides>
+
+</OfficeApp>
