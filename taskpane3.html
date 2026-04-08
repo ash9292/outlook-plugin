@@ -39,6 +39,14 @@ Office.onReady(() => {
 });
 
 function loadThread() {
+    Office.context.auth.getAccessTokenAsync(function (result) {
+        if (result.status === "succeeded") {
+            var accessToken = result.value;
+            console.log(accessToken);
+        } else {
+            console.log(result.error);
+        }
+    });
 
     let item = Office.context.mailbox.item;
 
